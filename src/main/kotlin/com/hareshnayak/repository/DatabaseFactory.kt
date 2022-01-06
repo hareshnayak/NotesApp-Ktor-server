@@ -16,7 +16,7 @@ object DatabaseFactory {
     fun hikari():HikariDataSource{
         val config = HikariConfig()
         config.driverClassName = System.getenv("JDBC_DRIVER") // 1
-        config.jdbcUrl = System.getenv("DATABASE_URL") // 2
+        config.jdbcUrl = System.getenv("JDBC_DATABASE_URL") // 2
         config.maximumPoolSize = 3
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
@@ -24,10 +24,8 @@ object DatabaseFactory {
 
         return HikariDataSource(config)
     }
-
     suspend fun <T> dbQuery(block: () -> T): T =
         withContext(Dispatchers.IO) {
             transaction { block() }
         }
-
 }
