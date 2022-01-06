@@ -3,14 +3,22 @@ package com.hareshnayak.plugins
 import com.hareshnayak.authentication.JwtService
 import com.hareshnayak.authentication.hash
 import com.hareshnayak.data.model.User
-import io.ktor.server.routing.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
+import com.hareshnayak.repository.Repo
+import com.hareshnayak.routes.NoteRoutes
+import com.hareshnayak.routes.userRoutes
+import io.ktor.application.*
+import io.ktor.response.*
+import io.ktor.routing.*
 
 fun Application.configureRouting() {
     val hashFunction = {s:String -> hash(s) }
     val jwtService = JwtService()
+    val db = Repo()
     routing {
+
+        userRoutes(db,jwtService,hashFunction)
+        NoteRoutes(db,hashFunction)
+
         get("/") {
             call.respondText("Hello World!")
         }
